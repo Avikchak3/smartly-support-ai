@@ -2,10 +2,13 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from env import SmartSupportEnv
 from models import Action
+import uvicorn
 
-app = FastAPI()   # ✅ MUST COME FIRST
+app = FastAPI()
 env = SmartSupportEnv()
 
+
+# ✅ Homepage UI (professional)
 @app.get("/", response_class=HTMLResponse)
 def home():
     return """
@@ -23,7 +26,6 @@ def home():
                     align-items: center;
                     height: 100vh;
                 }
-
                 .container {
                     background: rgba(255, 255, 255, 0.1);
                     padding: 40px;
@@ -32,16 +34,8 @@ def home():
                     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
                     text-align: center;
                 }
-
-                h1 {
-                    margin-bottom: 10px;
-                }
-
-                p {
-                    opacity: 0.8;
-                    margin-bottom: 20px;
-                }
-
+                h1 { margin-bottom: 10px; }
+                p { opacity: 0.8; margin-bottom: 20px; }
                 input {
                     width: 90%;
                     padding: 10px;
@@ -49,7 +43,6 @@ def home():
                     border: none;
                     margin-bottom: 10px;
                 }
-
                 button {
                     padding: 10px 20px;
                     border: none;
@@ -57,13 +50,8 @@ def home():
                     background: #00c6ff;
                     color: white;
                     cursor: pointer;
-                    transition: 0.3s;
                 }
-
-                button:hover {
-                    background: #0072ff;
-                }
-
+                button:hover { background: #0072ff; }
                 .output {
                     margin-top: 20px;
                     text-align: left;
@@ -73,16 +61,7 @@ def home():
                     font-size: 14px;
                     white-space: pre-wrap;
                 }
-
-                .links {
-                    margin-top: 20px;
-                }
-
-                a {
-                    color: #00c6ff;
-                    text-decoration: none;
-                    margin: 0 10px;
-                }
+                a { color: #00c6ff; text-decoration: none; }
             </style>
         </head>
 
@@ -97,9 +76,7 @@ def home():
 
                 <div class="output" id="output">Response will appear here...</div>
 
-                <div class="links">
-                    <a href="/docs">API Docs</a>
-                </div>
+                <p><a href="/docs">Open API Docs</a></p>
             </div>
 
             <script>
@@ -108,9 +85,7 @@ def home():
 
                     let response = await fetch('/step', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             action_type: "classify_issue",
                             content: msg
@@ -118,7 +93,6 @@ def home():
                     });
 
                     let data = await response.json();
-
                     document.getElementById("output").innerText = JSON.stringify(data, null, 2);
                 }
             </script>
@@ -127,11 +101,13 @@ def home():
     """
 
 
+# ✅ Reset endpoint
 @app.post("/reset")
 def reset():
     return env.reset().dict()
 
 
+# ✅ Step endpoint
 @app.post("/step")
 def step(action: dict):
     action_obj = Action(**action)
@@ -143,3 +119,12 @@ def step(action: dict):
         "done": done,
         "info": info
     }
+
+
+# ✅ REQUIRED FOR OPENENV VALIDATION (VERY IMPORTANT)
+def main():
+    uvicorn.run("server.app:app", host="0.0.0.0", port=8000)
+
+
+if __name__ == "__main__":
+    main()

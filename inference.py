@@ -1,25 +1,27 @@
 from env import SmartSupportEnv
 from models import Action
 
-env = SmartSupportEnv()
-obs = env.reset()
+def run():
+    env = SmartSupportEnv()
 
-print("Starting inference...")
+    # START
+    print("[START] task=customer_support", flush=True)
 
-# Simple baseline logic
-actions = [
-    Action(action_type="classify_issue", content="refund"),
-    Action(action_type="take_action", content="issue_refund"),
-    Action(action_type="generate_reply", content="Sorry for the inconvenience. Your refund has been processed.")
-]
+    obs = env.reset()
 
-total_reward = 0
+    # STEP 1
+    action = Action(action_type="classify_issue", content="refund")
+    obs, reward, done, info = env.step(action)
+    print(f"[STEP] step=1 reward={reward}", flush=True)
 
-for action in actions:
-    obs, reward, done, _ = env.step(action)
-    total_reward += reward
-    print(f"Action: {action}, Reward: {reward}")
-    if done:
-        break
+    # STEP 2
+    action = Action(action_type="take_action", content="issue_refund")
+    obs, reward, done, info = env.step(action)
+    print(f"[STEP] step=2 reward={reward}", flush=True)
 
-print("Final Score:", total_reward)
+    # END
+    print(f"[END] task=customer_support score={reward} steps=2", flush=True)
+
+
+if __name__ == "__main__":
+    run()

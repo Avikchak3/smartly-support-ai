@@ -1,0 +1,21 @@
+[project]
+name = "smartly-support-ai"
+version = "0.1.0"
+description = "Customer support simulation environment using OpenEnv"
+authors = [
+    {name = "Avik Chakraborty"}
+]
+dependencies = [
+    "pydantic",
+    "openai",
+    "numpy",
+    "pillow",
+    "openenv-core>=0.2.0"
+]
+
+[project.scripts]
+server = "server.app:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

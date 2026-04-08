@@ -1,0 +1,30 @@
+name: Smartly.Support AI
+description: Customer support simulation environment for AI agents
+
+version: 1.0
+
+observation_space:
+  customer_message: string
+  issue_type: string
+  action_taken: string
+  conversation_history: list
+  status: string
+
+action_space:
+  - classify_issue
+  - take_action
+  - generate_reply
+  - escalate_ticket
+  - noop
+
+reward_range: [0.0, 1.0]
+
+tasks:
+  - name: issue_classification
+    difficulty: easy
+
+  - name: action_decision
+    difficulty: medium
+
+  - name: full_support_handling
+    difficulty: hard

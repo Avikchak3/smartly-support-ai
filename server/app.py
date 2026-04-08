@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from env import SmartSupportEnv
 from models import Action
+import uvicorn
 
-app = FastAPI()   # ✅ MUST COME FIRST
+app = FastAPI()
 env = SmartSupportEnv()
+
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -23,9 +25,11 @@ def home():
     """
 
 
+
 @app.post("/reset")
 def reset():
     return env.reset().dict()
+
 
 
 @app.post("/step")
@@ -39,3 +43,11 @@ def step(action: dict):
         "done": done,
         "info": info
     }
+
+
+def main():
+    uvicorn.run("server.app:app", host="0.0.0.0", port=8000)
+
+
+if __name__ == "__main__":
+    main()
